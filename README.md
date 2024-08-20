@@ -1,2 +1,7 @@
 # Summer-Reading-2024-in-Amazon-by-APIs
-----Update Later-------
+
+---My passion for this project---
+# Write message below
+
+--- How to setup selenium ---
+# Write message below
