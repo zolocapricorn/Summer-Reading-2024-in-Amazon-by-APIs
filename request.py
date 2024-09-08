@@ -34,6 +34,12 @@ def writer_seller_kindle(soup):
     return writer_list, seller_list, kindle_list
 
 
+def book_badge(soup):
+    tags = soup.select("span.a-icon-alt")
+    star_list = [float(book.text.split(" ")[0]) for book in tags]
+    return star_list
+
+
 def main():
     url = "https://www.amazon.com/s?i=digital-text&rh=n%3A122131175011&fs=true&ref=lp_122131175011_sar"
     head = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15", 
@@ -43,8 +49,8 @@ def main():
             "Referer": "https://www.amazon.com/"}
     soup = requesting(url, head)
     # BookName = book_name(soup)
-    WriterSellerKindle = writer_seller_kindle(soup)
+    # WriterSellerKindle = writer_seller_kindle(soup)
     # BookBadge = book_badge(soup)
-    print(WriterSellerKindle)
+    pprint(BookBadge)
     
 main()
