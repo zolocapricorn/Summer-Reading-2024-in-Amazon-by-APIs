@@ -79,8 +79,8 @@ class book:
         self.Soup = calling_url.requesting(self.MainURL, self.MainHeader)
 
         # Book Calling
-        # self.BookURL = self.book_url_book_header()
-        # self.Book = calling_url.requesting(self.BookURL, self.MainHeader)
+        self.BookURL = self.book_url_book_header()
+        self.Book = calling_url.requesting(self.BookURL, self.MainHeader)
 
         # Book Star Calling
         self.StarURL, self.StarHeader = self.book_star_url_book_star_header()
@@ -92,9 +92,9 @@ class book:
         return MainURL, MainHeader
     
 
-    # def book_url_book_header(self):
-    #     BookURL = calling_url.generate_url_each_of_book(self.Soup)
-    #     return BookURL
+    def book_url_book_header(self):
+        BookURL = calling_url.generate_url_each_of_book(self.Soup)
+        return BookURL
     
 
     def book_star_url_book_star_header(self):
@@ -102,39 +102,57 @@ class book:
         return BookDetailURL, BookDetailHeader
 
 
-    # def book_name(self):
-    #     tags = [books.select("span#productTitle") for books in self.Book]
-    #     book_list = [book_name.text for book_tag in tags for book_name in book_tag]
-    #     return book_list
+    def book_name(self):
+        tags = [books.select("span#productTitle") for books in self.Book]
+        book_list = [book_name.text for book_tag in tags for book_name in book_tag]
+        return book_list
 
 
-    # def writer_name(self):
-    #     tags = [writers.select("span.author.notFaded > a") for writers in self.Book]
-    #     writer_list = [writer_name.text for writer_tag in tags for writer_name in writer_tag]
-    #     return writer_list
+    def writer_name(self):
+        tags = [writers.select("span.author.notFaded > a") for writers in self.Book]
+        writer_list = [writer_name.text for writer_tag in tags for writer_name in writer_tag]
+        return writer_list
     
 
-    # def seller_name(self):
-    #     tags = [sellers.select("td > span.a-color-base") for sellers in self.Book]
-    #     seller_list = [seller_name.text for seller_tag in tags for seller_name in seller_tag]
-    #     return seller_list
+    def seller_name(self):
+        tags = [sellers.select("td > span.a-color-base") for sellers in self.Book]
+        seller_list = [seller_name.text for seller_tag in tags for seller_name in seller_tag]
+        return seller_list
     
 
-    # def avaliable_kindle(self):
-    #     tags = [kindle.select("span#productSubtitle") for kindle in self.Book]
-    #     kindle_list = ["Yes" if kindle.text == "  Kindle Edition " else "No" for kindle_tag in tags for kindle in kindle_tag]
-    #     return kindle_list
+    def avaliable_kindle(self):
+        tags = [kindle.select("span#productSubtitle") for kindle in self.Book]
+        kindle_list = ["Yes" if kindle.text == "  Kindle Edition " else "No" for kindle_tag in tags for kindle in kindle_tag]
+        return kindle_list
     
     
+    def book_price(self):
+        kindle_price, audiobook_price, hardcover_price, paperback_price = [], [], [], []
+        type_tags = [types.select("span.slot-title > span") for types in self.Book]
+        type_list = [types.text for type_tag in type_tags for types in type_tag]
+        price_tags = [price.select("span.slot-price > span") for price in self.Book]
+        price_list = [price.text for price_tag in price_tags for price in price_tag]
+        for check in range(len(type_list)):
+            if type_list[check] == "Kindle":
+                kindle_price.append(price_list[check])
+            elif type_list[check] == "Hardcover":
+                hardcover_price.append(price_list[check])
+            elif type_list[check] == "Paperback":
+                paperback_price.append(price_list[check])
+            else:
+                audiobook_price.append(price_list[check])
+        return kindle_price, audiobook_price, hardcover_price, paperback_price
+
+
     class book_stars:
         def __init__(self, book):
             self.BookStars = book
 
 
-        # def average_star(self):
-        #     tags = [avg_stars.select("div.a-icon-row.a-spacing-small.a-padding-none > h2") for avg_stars in self.BookStars.Star]
-        #     average_star_list = [float(avg.text.split(" ")[0]) for avg_tag in tags for avg in avg_tag]
-        #     return average_star_list
+        def average_star(self):
+            tags = [avg_stars.select("div.a-icon-row.a-spacing-small.a-padding-none > h2") for avg_stars in self.BookStars.Star]
+            average_star_list = [float(avg.text.split(" ")[0]) for avg_tag in tags for avg in avg_tag]
+            return average_star_list
 
 
         def number_of_customers_review(self):
@@ -143,17 +161,17 @@ class book:
             return number_customers_list
 
 
-        # def percentages_each_type_of_stars(self):
-        #     five_star, four_star, three_star, two_star, one_star = [], [], [], [], []
-        #     for taglist in self.BookStars.Star:
-        #         tags = taglist.select("span")
-        #         star_list = [data.text.replace(" ", "").replace("\n", "").replace("%", "") for data in tags if data.text.find("%") >= 0][1:6]
-        #         five_star.append(star_list[0])
-        #         four_star.append(star_list[1])
-        #         three_star.append(star_list[2])
-        #         two_star.append(star_list[3])
-        #         one_star.append(star_list[4])
-        #     return five_star, four_star, three_star, two_star, one_star
+        def percentages_each_type_of_stars(self):
+            five_star, four_star, three_star, two_star, one_star = [], [], [], [], []
+            for taglist in self.BookStars.Star:
+                tags = taglist.select("span")
+                star_list = [data.text.replace(" ", "").replace("\n", "").replace("%", "") for data in tags if data.text.find("%") >= 0][1:6]
+                five_star.append(star_list[0])
+                four_star.append(star_list[1])
+                three_star.append(star_list[2])
+                two_star.append(star_list[3])
+                one_star.append(star_list[4])
+            return five_star, four_star, three_star, two_star, one_star
 
 
 """Single Calling"""
@@ -164,18 +182,23 @@ ClassBook = book()
 # Call 2nd Class
 SubClassBookStars = ClassBook.book_stars(ClassBook)
 
-# Call Function
-# BookName = ClassBook.book_name()
-# WriterName = ClassBook.writer_name()
-# SellerName = ClassBook.seller_name()
-# KindleAvaliable = ClassBook.avaliable_kindle()
-# AverageStars = SubClassBookStars.average_star()
-# FiveStar, FourStar, ThreeStar, TwoStar, OneStar = SubClassBookStars.percentages_each_type_of_stars()
+# Call Function in ClassBook
+BookName = ClassBook.book_name()
+WriterName = ClassBook.writer_name()
+SellerName = ClassBook.seller_name()
+KindleAvaliable = ClassBook.avaliable_kindle()
+KindlePrice, AudiobookPrice, HardcoverPrice, PaperbackPrice = ClassBook.book_price()
+
+# Call Function in SubClassBookStars
+AverageStars = SubClassBookStars.average_star()
+FiveStar, FourStar, ThreeStar, TwoStar, OneStar = SubClassBookStars.percentages_each_type_of_stars()
 NumberOfCustomersReview = SubClassBookStars.number_of_customers_review()
-pprint(NumberOfCustomersReview)
+
+print(KindlePrice, AudiobookPrice, HardcoverPrice, PaperbackPrice)
 
 """Note"""
 # 1. BookName should to strip left and right
 # 2. WriterName should check space between firstname and surname.
 # 3. SellerName should to strip left and right
+# 4.KindlePrice, AudiobookPrice, HardcoverPrice, PaperbackPrice should to strip left&right and replace \n
 
