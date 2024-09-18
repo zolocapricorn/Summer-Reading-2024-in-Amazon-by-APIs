@@ -8,7 +8,7 @@ import re
 class calling_url:
     def generate_url_amazon_page():
         """Single URL"""
-        amazon_url = "https://www.amazon.com/s?i=digital-text&rh=n%3A122131175011&fs=true&page=1qid=1725787065&ref=sr_pg_1"
+        amazon_url = "https://www.amazon.com/s?i=digital-text&rh=n%3A23901427011&fs=true&page=1qid=1725787065&ref=sr_pg_1"
         amazon_header = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15", 
                          "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8", 
                          "Accept-Encoding": "gzip, deflate, br", 
@@ -35,7 +35,7 @@ class calling_url:
         book_tag = soup.select("a.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal")
         book_href_list = [tag.get("href") for tag in book_tag]
         book_link = "https://www.amazon.com/{0}"
-        book_url = list(set([book_link.format(link) for link in book_href_list]))
+        book_url = list(set([book_link.format(link) for link in book_href_list]))[0:3]
         return book_url
         
 
@@ -114,33 +114,16 @@ class book:
         return writer_list
     
 
-    # def seller_name(self):
-    #     tags = self.Book.select("a.a-color-base")
-    #     seller_list = [seller.text for seller in tags]
-    #     return seller_list
+    def seller_name(self):
+        tags = [sellers.select("td > span.a-color-base") for sellers in self.Book]
+        seller_list = [seller_name.text for seller_tag in tags for seller_name in seller_tag]
+        return seller_list
     
 
-    # def avaliable_kindle(self):
-    #     tags = self.Book.select("span#productSubtitle")
-    #     kindle_list = ["Yes" if kindle == "Kindle Edition" else "No" for kindle in tags]
-    #     return kindle_list
-    
-
-    # def writer_seller_kindle(self):
-    #     tags = self.Soup.select("a.a-size-base")
-    #     writer_seller_kindle_list = [writer.text for writer in tags]
-    #     writer_list, seller_list, kindle_list = [], [], []
-    #     for count in range(len(writer_seller_kindle_list)):
-    #         if count%3 == 0:
-    #             writer_list.append(writer_seller_kindle_list[count])
-    #         elif count%3 == 1:
-    #             seller_list.append(writer_seller_kindle_list[count])
-    #         else:
-    #             if writer_seller_kindle_list[count] == "Kindle Edition":
-    #                 kindle_list.append("Yes")
-    #             else:
-    #                 kindle_list.append("No")
-    #     return writer_list, seller_list, kindle_list
+    def avaliable_kindle(self):
+        tags = [kindle.select("span#productSubtitle") for kindle in self.Book]
+        kindle_list = ["Yes" if kindle.text == "  Kindle Edition " else "No" for kindle_tag in tags for kindle in kindle_tag]
+        return kindle_list
     
 
     # def users_review(self):
@@ -182,13 +165,16 @@ ClassBook = book()
 # Call Function
 BookName = ClassBook.book_name()
 WriterName = ClassBook.writer_name()
+SellerName = ClassBook.seller_name()
+KindleAvaliable = ClassBook.avaliable_kindle()
 # WriterSellerKindle = ClassBook.writer_seller_kindle()
 # AverageStars = SubClassBookStars.average_star()
 # StarList = SubClassBookStars.percentages_each_type_of_stars()
 # FiveStar, FourStar, ThreeStar, TwoStar, OneStar = SubClassBookStars.percentages_each_type_of_stars()
-pprint(WriterName)
+pprint(KindleAvaliable)
 
 """Note"""
 # 1. BookName should to strip left and right
 # 2. WriterName should check space between firstname and surname.
+# 3. SellerName should to strip left and right
 
